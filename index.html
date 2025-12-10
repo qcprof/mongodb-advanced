@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MongoDB - Acc 341</title>
+  <title>Advanced MongoDB - Acc 341 - Prof. Qureshi</title>
   <link
     href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Crimson+Pro:wght@400;600;700&family=Work+Sans:wght@400;500;600&display=swap"
     rel="stylesheet">
@@ -17,7 +17,7 @@
       --bg-secondary: #1A1A1A;
       --bg-tertiary: #252525;
       --text-primary: #E8E8E8;
-      --text-secondary: #A8A8A8;
+      --text-secondary: #B5B5B5;
       --border-color: #333333;
       --success: #4CAF50;
       --warning: #FF6B6B;
@@ -255,30 +255,6 @@
       margin-bottom: 0.5rem;
     }
 
-    /* Navigation dots */
-    .nav-dots {
-      position: fixed;
-      right: 2rem;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 100;
-    }
-
-    .nav-dot {
-      width: 10px;
-      height: 10px;
-      background: var(--border-color);
-      border-radius: 50%;
-      margin: 1rem 0;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .nav-dot:hover {
-      background: var(--amber-primary);
-      transform: scale(1.3);
-    }
-
     /* Output boxes */
     .output-box {
       background: #0D1117;
@@ -436,15 +412,24 @@
         padding: 0 1rem;
       }
 
-      .nav-dots {
-        display: none;
-      }
-
       .back-to-top {
         bottom: 1rem;
         right: 1rem;
         width: 45px;
         height: 45px;
+      }
+    }
+
+    /* Reduced motion support for accessibility */
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
       }
     }
 
@@ -472,8 +457,8 @@
 <body>
   <div class="container">
     <header>
-      <h1>Advanced MongoDB for Acc 341</h1>
-      <p class="subtitle">Dr. Qureshi - Guide to CRUD Operations in Atlas</p>
+      <h1>Advanced MongoDB - Acc 341</h1>
+      <p class="subtitle">Prof. Qureshi - Guide to CRUD Operations</p>
     </header>
 
     <!-- Back to Top Button -->
@@ -570,6 +555,26 @@
         <p>MongoDB is a NoSQL database that stores data in flexible, JSON-like documents. Unlike traditional
           spreadsheets or SQL databases with rigid rows and columns, MongoDB allows you to store complex financial data
           naturally, just like you might organize information in nested folders.</p>
+        <p><strong>For SQL students:</strong> If you're familiar with SQL databases, here's a quick translation:</p>
+        <ul>
+          <li>MongoDB <strong>Database</strong> = SQL Database</li>
+          <li>MongoDB <strong>Collection</strong> ≈ SQL Table</li>
+          <li>MongoDB <strong>Document</strong> ≈ SQL Row/Record</li>
+          <li>MongoDB <strong>Field</strong> = SQL Column</li>
+        </ul>
+      </div>
+
+      <div class="info-box">
+        <strong>💼 Accounting Terms in This Tutorial:</strong>
+        <p>Understanding the transaction types we'll work with:</p>
+        <ul>
+          <li><strong>Invoice:</strong> A bill sent to a customer for goods or services provided. Represents money you
+            expect to receive (Accounts Receivable).</li>
+          <li><strong>Expense:</strong> Money spent or committed to spend on business operations (supplies, equipment,
+            services, etc.).</li>
+          <li><strong>Payment:</strong> Actual cash outflow - money paid to vendors, suppliers, or for services
+            rendered.</li>
+        </ul>
       </div>
     </section>
 
@@ -603,10 +608,18 @@
 
       <div class="info-box">
         <strong>💡 How to insert this data:</strong>
-        <p><strong>Important:</strong> Atlas's "INSERT DOCUMENT" button inserts ONE document at a time. You have two
-          options:</p>
+        <p><strong>Important:</strong> You have multiple options for inserting data into Atlas.</p>
 
-        <p><strong>Option 1 - Insert Documents One at a Time (Recommended for Beginners):</strong></p>
+        <p><strong>Option 1 - Import JSON File (Easiest for 25 records):</strong></p>
+        <ol>
+          <li>Save the array below to a file called <code>transactions.json</code> on your computer</li>
+          <li>In Atlas, navigate to your <code>transactions</code> collection</li>
+          <li>Click "Add Data" → "Import JSON or CSV File"</li>
+          <li>Select your <code>transactions.json</code> file</li>
+          <li>Click "Import" - all 25 records will be added at once!</li>
+        </ol>
+
+        <p><strong>Option 2 - Insert Documents One at a Time (GUI):</strong></p>
         <ol>
           <li>Click the "INSERT DOCUMENT" button in Atlas</li>
           <li>Switch to the "JSON" view (not the visual editor)</li>
@@ -617,7 +630,7 @@
           <li>Repeat for all 25 transactions</li>
         </ol>
 
-        <p><strong>Option 2 - Bulk Insert Using mongosh (Advanced):</strong></p>
+        <p><strong>Option 3 - Bulk Insert Using mongosh (Advanced):</strong></p>
         <ol>
           <li>In Atlas, click "Connect" → "Shell"</li>
           <li>Copy the entire array below (all 25 records with brackets <code>[]</code>)</li>
@@ -631,7 +644,7 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Financial Transactions Dataset (25 records)</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>[
   {
@@ -970,6 +983,9 @@
           <li><strong>category:</strong> Expense classification</li>
           <li><strong>department:</strong> Which department initiated the transaction</li>
         </ul>
+        <p><strong>📅 Note about Dates:</strong> In this tutorial, dates are stored as text strings (e.g., "2024-03-15")
+          for simplicity. In production MongoDB databases, you would typically store dates as ISODate objects for proper
+          date comparisons and date math. Example: <code>ISODate("2024-03-15T00:00:00Z")</code></p>
       </div>
     </section>
 
@@ -997,7 +1013,7 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Filter: Find paid transactions</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{ "status": "paid" }</code></pre>
       </div>
@@ -1010,7 +1026,7 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Filter: Find all invoices</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{ "type": "invoice" }</code></pre>
       </div>
@@ -1023,7 +1039,7 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Filter: Find IT department transactions</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{ "department": "IT" }</code></pre>
       </div>
@@ -1036,9 +1052,12 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Filter: Find transactions over $2,000</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{ "amount": { "$gt": 2000 } }</code></pre>
+      </div>
+      <div class="output-box">
+        Expected Result: Returns transactions over $2,000 (9 records)
       </div>
       <div class="info-box">
         <strong>💡 Comparison Operators:</strong>
@@ -1057,12 +1076,12 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Filter: Find transactions between $500-$1,500</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{ "amount": { "$gte": 500, "$lte": 1500 } }</code></pre>
       </div>
       <div class="output-box">
-        Expected Result: Returns transactions with amounts between $500 and $1,500
+        Expected Result: Returns transactions with amounts between $500 and $1,500 (9 records)
       </div>
 
       <h3>Example 6: Find by Date</h3>
@@ -1070,7 +1089,7 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Filter: Find March 2024 transactions</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{ "date": { "$gte": "2024-03-01", "$lte": "2024-03-31" } }</code></pre>
       </div>
@@ -1086,7 +1105,7 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Filter: Find unpaid invoices</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{ "type": "invoice", "status": "unpaid" }</code></pre>
       </div>
@@ -1099,7 +1118,7 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Filter: Find unpaid transactions over $1,000</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{ "status": "unpaid", "amount": { "$gt": 1000 } }</code></pre>
       </div>
@@ -1109,9 +1128,12 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Filter: Find Marketing transactions in February</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{ "department": "Sales & Marketing", "date": { "$gte": "2024-02-01", "$lte": "2024-02-28" } }</code></pre>
+      </div>
+      <div class="output-box">
+        Expected Result: Returns February 2024 Sales & Marketing transactions (3 records)
       </div>
 
       <h3 id="or-logic">OR Logic - Finding Multiple Options</h3>
@@ -1122,7 +1144,7 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Filter: Find paid or approved transactions</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{ "$or": [ { "status": "paid" }, { "status": "approved" } ] }</code></pre>
       </div>
@@ -1137,7 +1159,7 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Filter: Find IT or Finance transactions</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{ "$or": [ { "department": "IT" }, { "department": "Finance" } ] }</code></pre>
       </div>
@@ -1149,9 +1171,12 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Filter: Find invoices or payments</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{ "type": { "$in": ["invoice", "payment"] } }</code></pre>
+      </div>
+      <div class="output-box">
+        Expected Result: Returns all invoices and payments (16 records)
       </div>
 
       <h3>Example 13: Find Multiple Status Values</h3>
@@ -1159,9 +1184,12 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Filter: Find non-paid transactions</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{ "status": { "$in": ["pending", "approved", "unpaid"] } }</code></pre>
+      </div>
+      <div class="output-box">
+        Expected Result: Returns transactions with pending, approved, or unpaid status (11 records)
       </div>
 
       <h3 id="complex-queries">Complex Queries</h3>
@@ -1171,7 +1199,7 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Filter: Complex multi-condition query</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{ 
   "status": "unpaid", 
@@ -1182,13 +1210,17 @@
   ]
 }</code></pre>
       </div>
+      <div class="output-box">
+        Expected Result: Returns unpaid transactions over $500 from Sales & Marketing or IT departments (3 records:
+        TRX004, TRX010, TRX022)
+      </div>
 
       <h3>Example 15: Date Range with Category Filter</h3>
       <p>Find all Capital Expenditures from Q1 2024 (January through March).</p>
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Filter: Q1 capital expenditures</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{ 
   "category": "Capital Expenditure",
@@ -1206,6 +1238,17 @@
       <p>You can sort results in Atlas using the "Options" dropdown next to the Filter box.</p>
 
       <div class="step-box">
+        <p><strong>Understanding Atlas Find Interface:</strong></p>
+        <p>The Atlas "Find" tab has separate input fields:</p>
+        <ul>
+          <li><strong>FILTER</strong> - What records to find (the queries we've been using)</li>
+          <li><strong>PROJECT</strong> - Which fields to show/hide (we won't use this)</li>
+          <li><strong>SORT</strong> - How to order results (covered in this section)</li>
+          <li><strong>LIMIT</strong> - Maximum number of results to show (covered next)</li>
+        </ul>
+      </div>
+
+      <div class="step-box">
         <p><strong>How to sort:</strong></p>
         <ol>
           <li>Click "Options" next to the FILTER box</li>
@@ -1221,7 +1264,7 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Sort: Highest amounts first</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{ "amount": -1 }</code></pre>
       </div>
@@ -1231,7 +1274,7 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Sort: Newest transactions first</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{ "date": -1 }</code></pre>
       </div>
@@ -1241,7 +1284,7 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Sort: Lowest amounts first</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{ "amount": 1 }</code></pre>
       </div>
@@ -1264,7 +1307,7 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Filter: All records</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{}</code></pre>
       </div>
@@ -1272,7 +1315,7 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Sort: By amount descending</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{ "amount": -1 }</code></pre>
       </div>
@@ -1284,7 +1327,7 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Filter: Unpaid invoices</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{ "type": "invoice", "status": "unpaid" }</code></pre>
       </div>
@@ -1292,7 +1335,7 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Sort: By date descending</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{ "date": -1 }</code></pre>
       </div>
@@ -1326,7 +1369,7 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Aggregation Stage: Group by type and sum amounts</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{
   "_id": "$type",
@@ -1351,7 +1394,7 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Aggregation Stage: Group by department</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{
   "_id": "$department",
@@ -1365,19 +1408,19 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Aggregation Stage: Sort results</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{ "totalSpent": -1 }</code></pre>
       </div>
 
       <h3 id="agg-monthly">Example 23: Monthly Transaction Summary</h3>
-      <p>Get a breakdown of transactions by month. This uses a more complex grouping.</p>
+      <p>Get a breakdown of transactions by month. This extracts the year-month from date strings.</p>
 
       <p><strong>Stage 1: $group</strong></p>
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Aggregation Stage: Group by month</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{
   "_id": { 
@@ -1397,13 +1440,16 @@
           <li>Take 7 characters (result: "2024-03")</li>
         </ul>
         <p>This groups all transactions from the same month together.</p>
+        <p><strong>Note:</strong> Our dates are stored as text strings. In production MongoDB databases, dates are
+          typically stored as ISODate objects. If using real date objects, you'd use <code>$dateToString</code> instead:
+          <code>{ "$dateToString": { "format": "%Y-%m", "date": "$date" } }</code></p>
       </div>
 
       <p><strong>Stage 2: $sort</strong></p>
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Aggregation Stage: Sort by month</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{ "_id": 1 }</code></pre>
       </div>
@@ -1415,7 +1461,7 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Aggregation Stage: Filter unpaid invoices</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{
   "type": "invoice",
@@ -1427,7 +1473,7 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Aggregation Stage: Group by customer</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{
   "_id": "$customer",
@@ -1440,7 +1486,7 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Aggregation Stage: Sort by amount owed</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{ "totalOwed": -1 }</code></pre>
       </div>
@@ -1452,7 +1498,7 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Aggregation Stage: Group by category</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{
   "_id": "$category",
@@ -1468,7 +1514,7 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Aggregation Stage: Sort by total spending</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{ "totalSpending": -1 }</code></pre>
       </div>
@@ -1480,8 +1526,10 @@
           <li><code>$avg</code> - Calculate average</li>
           <li><code>$max</code> - Find maximum value</li>
           <li><code>$min</code> - Find minimum value</li>
-          <li><code>$count</code> - Count documents</li>
+          <li><code>$sum: 1</code> - Count documents in each group (use this inside $group)</li>
         </ul>
+        <p><strong>Note:</strong> <code>$count</code> is a pipeline stage (not shown here), not an accumulator. To count
+          documents within a <code>$group</code>, use <code>{ "$sum": 1 }</code> as shown in the examples above.</p>
       </div>
 
     </section>
@@ -1507,7 +1555,7 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">New Document: Invoice record</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{
   "transactionId": "TRX026",
@@ -1528,7 +1576,7 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">New Document: Expense record</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{
   "transactionId": "TRX027",
@@ -1568,7 +1616,7 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Filter: Find specific invoice</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{ "transactionId": "TRX004" }</code></pre>
       </div>
@@ -1584,7 +1632,7 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Filter: Find pending expense</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{ "transactionId": "TRX008" }</code></pre>
       </div>
@@ -1598,7 +1646,7 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Filter: Find transaction to correct</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{ "transactionId": "TRX027" }</code></pre>
       </div>
@@ -1627,6 +1675,11 @@
         <strong>⚠️ Warning:</strong>
         <p>Deletion is permanent! Always make sure you're deleting the correct record. In a real accounting system, you
           might want to mark records as "inactive" rather than deleting them to maintain an audit trail.</p>
+        <p><strong>Best Practice - Soft Delete:</strong> Instead of permanently removing records, professional
+          accounting systems typically use a "soft delete" approach by adding a field like
+          <code>"isActive": false</code> or <code>"deletedDate": "2024-04-15"</code>. This preserves the audit trail
+          while logically removing the record from normal queries. You would then filter out inactive records:
+          <code>{ "isActive": true }</code></p>
       </div>
 
       <h3>Example 31: Delete a Duplicate Transaction</h3>
@@ -1634,7 +1687,7 @@
       <div class="code-block">
         <div class="code-header">
           <span class="code-label">Filter: Find transaction to delete</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <button class="copy-btn" onclick="copyCode(this)" aria-label="Copy code">Copy</button>
         </div>
         <pre><code>{ "transactionId": "TRX027" }</code></pre>
       </div>
@@ -1695,61 +1748,90 @@
     </section>
 
     <footer>
-      <p>MongoDB for Accounting Students - Atlas Tutorial</p>
+      <p>Advanced MongoDB - Acc 341 | Prof. Qureshi</p>
       <p>Created for educational purposes</p>
     </footer>
   </div>
 
   <script>
-    // Copy to clipboard functionality
+    // Copy to clipboard functionality with fallback
     function copyCode( button ) {
-      const codeBlock = button.closest( '.code-block' );
-      const code = codeBlock.querySelector( 'code' ).textContent;
+      const block = button.closest( '.code-block' );
+      const codeEl = block.querySelector( 'pre > code' );
+      const code = codeEl ? codeEl.textContent : '';
 
-      navigator.clipboard.writeText( code ).then( () => {
-        button.textContent = 'Copied!';
-        button.classList.add( 'copied' );
-        codeBlock.classList.add( 'highlight' );
-
-        setTimeout( () => {
-          button.textContent = 'Copy';
-          button.classList.remove( 'copied' );
-          codeBlock.classList.remove( 'highlight' );
-        }, 2000 );
-      } ).catch( err => {
-        console.error( 'Failed to copy:', err );
-        button.textContent = 'Error!';
-        setTimeout( () => {
-          button.textContent = 'Copy';
-        }, 2000 );
-      } );
+      const copy = async () => {
+        try {
+          await navigator.clipboard.writeText( code );
+          button.textContent = 'Copied!';
+          button.classList.add( 'copied' );
+          block.classList.add( 'highlight' );
+          setTimeout( () => {
+            button.textContent = 'Copy';
+            button.classList.remove( 'copied' );
+            block.classList.remove( 'highlight' );
+          }, 2000 );
+        } catch ( e ) {
+          // Fallback for older browsers or non-HTTPS contexts
+          const ta = document.createElement( 'textarea' );
+          ta.value = code;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild( ta );
+          ta.select();
+          try {
+            document.execCommand( 'copy' );
+            button.textContent = 'Copied!';
+            button.classList.add( 'copied' );
+            setTimeout( () => {
+              button.textContent = 'Copy';
+              button.classList.remove( 'copied' );
+            }, 2000 );
+          } catch ( err ) {
+            button.textContent = 'Error!';
+            setTimeout( () => {
+              button.textContent = 'Copy';
+            }, 2000 );
+          }
+          document.body.removeChild( ta );
+        }
+      };
+      copy();
     }
 
-    // Smooth scroll for better UX
-    document.querySelectorAll( 'a[href^="#"]' ).forEach( anchor => {
-      anchor.addEventListener( 'click', function ( e ) {
+    // Smooth scroll for better UX with accessibility
+    document.querySelectorAll( 'a[href^="#"]' ).forEach( a => {
+      a.addEventListener( 'click', e => {
+        const id = a.getAttribute( 'href' );
+        if ( !id || id === '#' ) return;
+        const target = document.querySelector( id );
+        if ( !target ) return;
         e.preventDefault();
-        const target = document.querySelector( this.getAttribute( 'href' ) );
-        if ( target ) {
-          target.scrollIntoView( {
-            behavior: 'smooth',
-            block: 'start'
-          } );
-        }
+        target.scrollIntoView( { behavior: 'smooth', block: 'start' } );
+        // Improve accessibility: focus target for keyboard navigation
+        target.setAttribute( 'tabindex', '-1' );
+        target.focus( { preventScroll: true } );
+        // Update URL without page jump
+        history.pushState( null, '', id );
       } );
     } );
 
-    // Back to Top Button functionality
+    // Back to Top Button functionality with accessibility
     const backToTopButton = document.getElementById( 'backToTop' );
 
     // Show/hide button based on scroll position
     window.addEventListener( 'scroll', () => {
       if ( window.pageYOffset > 300 ) {
         backToTopButton.classList.add( 'visible' );
+        backToTopButton.setAttribute( 'aria-hidden', 'false' );
       } else {
         backToTopButton.classList.remove( 'visible' );
+        backToTopButton.setAttribute( 'aria-hidden', 'true' );
       }
     } );
+
+    // Initialize aria-hidden state
+    backToTopButton.setAttribute( 'aria-hidden', 'true' );
 
     // Smooth scroll to top when clicked
     backToTopButton.addEventListener( 'click', () => {
