@@ -1,607 +1,639 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MongoDB for Accounting Students - Atlas Tutorial</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Crimson+Pro:wght@400;600;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --amber-primary: #FFB300;
-            --amber-bright: #FFC947;
-            --amber-dark: #FF8F00;
-            --bg-dark: #0F0F0F;
-            --bg-secondary: #1A1A1A;
-            --bg-tertiary: #252525;
-            --text-primary: #E8E8E8;
-            --text-secondary: #A8A8A8;
-            --border-color: #333333;
-            --success: #4CAF50;
-            --warning: #FF6B6B;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MongoDB for Accounting Students - Atlas Tutorial</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Crimson+Pro:wght@400;600;700&family=Work+Sans:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --amber-primary: #FFB300;
+      --amber-bright: #FFC947;
+      --amber-dark: #FF8F00;
+      --bg-dark: #0F0F0F;
+      --bg-secondary: #1A1A1A;
+      --bg-tertiary: #252525;
+      --text-primary: #E8E8E8;
+      --text-secondary: #A8A8A8;
+      --border-color: #333333;
+      --success: #4CAF50;
+      --warning: #FF6B6B;
+    }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-primary);
-            font-family: 'Work Sans', sans-serif;
-            line-height: 1.7;
-            overflow-x: hidden;
-        }
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      font-family: 'Work Sans', sans-serif;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
 
-        /* Animated background */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(255, 179, 0, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(255, 143, 0, 0.03) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 0;
-        }
+    /* Animated background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(255, 179, 0, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(255, 143, 0, 0.03) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            position: relative;
-            z-index: 1;
-        }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      position: relative;
+      z-index: 1;
+    }
 
-        /* Header */
-        header {
-            padding: 4rem 0 3rem;
-            text-align: center;
-            border-bottom: 2px solid var(--border-color);
-            margin-bottom: 3rem;
-            position: relative;
-        }
+    /* Header */
+    header {
+      padding: 4rem 0 3rem;
+      text-align: center;
+      border-bottom: 2px solid var(--border-color);
+      margin-bottom: 3rem;
+      position: relative;
+    }
 
-        h1 {
-            font-family: 'Crimson Pro', serif;
-            font-size: 3.5rem;
-            font-weight: 700;
-            color: var(--amber-primary);
-            margin-bottom: 1rem;
-            letter-spacing: -0.02em;
-            text-shadow: 0 0 30px rgba(255, 179, 0, 0.3);
-        }
+    h1 {
+      font-family: 'Crimson Pro', serif;
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: var(--amber-primary);
+      margin-bottom: 1rem;
+      letter-spacing: -0.02em;
+      text-shadow: 0 0 30px rgba(255, 179, 0, 0.3);
+    }
 
-        .subtitle {
-            font-size: 1.25rem;
-            color: var(--text-secondary);
-            font-weight: 400;
-        }
+    .subtitle {
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
 
-        /* Section Styling */
-        section {
-            margin-bottom: 5rem;
-            animation: fadeInUp 0.6s ease-out;
-        }
+    /* Section Styling */
+    section {
+      margin-bottom: 5rem;
+      animation: fadeInUp 0.6s ease-out;
+    }
 
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
 
-        h2 {
-            font-family: 'Crimson Pro', serif;
-            font-size: 2.5rem;
-            color: var(--amber-bright);
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 3px solid var(--amber-dark);
-            display: inline-block;
-        }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-        h3 {
-            font-family: 'Work Sans', sans-serif;
-            font-size: 1.5rem;
-            color: var(--amber-primary);
-            margin: 2.5rem 0 1rem;
-            font-weight: 600;
-        }
+    h2 {
+      font-family: 'Crimson Pro', serif;
+      font-size: 2.5rem;
+      color: var(--amber-bright);
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 3px solid var(--amber-dark);
+      display: inline-block;
+    }
 
-        p, li {
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-            font-size: 1.05rem;
-        }
+    h3 {
+      font-family: 'Work Sans', sans-serif;
+      font-size: 1.5rem;
+      color: var(--amber-primary);
+      margin: 2.5rem 0 1rem;
+      font-weight: 600;
+    }
 
-        .intro-box {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-left: 4px solid var(--amber-primary);
-            padding: 2rem;
-            margin: 2rem 0;
-            border-radius: 8px;
-        }
+    p,
+    li {
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      font-size: 1.05rem;
+    }
 
-        /* Code Blocks */
-        .code-block {
-            position: relative;
-            margin: 1.5rem 0;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-        }
+    .intro-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--amber-primary);
+      padding: 2rem;
+      margin: 2rem 0;
+      border-radius: 8px;
+    }
 
-        .code-header {
-            background: var(--bg-secondary);
-            padding: 0.75rem 1.5rem;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+    /* Code Blocks */
+    .code-block {
+      position: relative;
+      margin: 1.5rem 0;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
 
-        .code-label {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            color: var(--amber-bright);
-            font-weight: 500;
-        }
+    .code-header {
+      background: var(--bg-secondary);
+      padding: 0.75rem 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-        .copy-btn {
-            background: var(--amber-dark);
-            color: var(--bg-dark);
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-            font-family: 'Work Sans', sans-serif;
-            font-weight: 600;
-            font-size: 0.85rem;
-            transition: all 0.3s ease;
-        }
+    .code-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--amber-bright);
+      font-weight: 500;
+    }
 
-        .copy-btn:hover {
-            background: var(--amber-bright);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 179, 0, 0.3);
-        }
+    .copy-btn {
+      background: var(--amber-dark);
+      color: var(--bg-dark);
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      font-family: 'Work Sans', sans-serif;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: all 0.3s ease;
+    }
 
-        .copy-btn.copied {
-            background: var(--success);
-            color: white;
-        }
+    .copy-btn:hover {
+      background: var(--amber-bright);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 179, 0, 0.3);
+    }
 
-        pre {
-            padding: 1.5rem;
-            margin: 0;
-            overflow-x: auto;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            color: var(--text-primary);
-        }
+    .copy-btn.copied {
+      background: var(--success);
+      color: white;
+    }
 
-        code {
-            font-family: 'JetBrains Mono', monospace;
-            background: var(--bg-tertiary);
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-            color: var(--amber-bright);
-            font-size: 0.9em;
-        }
+    pre {
+      padding: 1.5rem;
+      margin: 0;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-primary);
+    }
 
-        /* Step boxes */
-        .step-box {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            border-radius: 8px;
-            border-left: 4px solid var(--amber-dark);
-        }
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg-tertiary);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      color: var(--amber-bright);
+      font-size: 0.9em;
+    }
 
-        .step-number {
-            display: inline-block;
-            background: var(--amber-primary);
-            color: var(--bg-dark);
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            text-align: center;
-            line-height: 30px;
-            font-weight: bold;
-            margin-right: 0.5rem;
-        }
+    /* Step boxes */
+    .step-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      border-radius: 8px;
+      border-left: 4px solid var(--amber-dark);
+    }
 
-        /* Info boxes */
-        .info-box {
-            background: rgba(255, 179, 0, 0.1);
-            border: 1px solid var(--amber-dark);
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            border-radius: 8px;
-            border-left: 4px solid var(--amber-primary);
-        }
+    .step-number {
+      display: inline-block;
+      background: var(--amber-primary);
+      color: var(--bg-dark);
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 30px;
+      font-weight: bold;
+      margin-right: 0.5rem;
+    }
 
-        .info-box strong {
-            color: var(--amber-bright);
-        }
+    /* Info boxes */
+    .info-box {
+      background: rgba(255, 179, 0, 0.1);
+      border: 1px solid var(--amber-dark);
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      border-radius: 8px;
+      border-left: 4px solid var(--amber-primary);
+    }
 
-        /* Lists */
-        ul, ol {
-            margin-left: 2rem;
-            margin-bottom: 1rem;
-        }
+    .info-box strong {
+      color: var(--amber-bright);
+    }
 
-        li {
-            margin-bottom: 0.5rem;
-        }
+    /* Lists */
+    ul,
+    ol {
+      margin-left: 2rem;
+      margin-bottom: 1rem;
+    }
 
-        /* Navigation dots */
-        .nav-dots {
-            position: fixed;
-            right: 2rem;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 100;
-        }
+    li {
+      margin-bottom: 0.5rem;
+    }
 
-        .nav-dot {
-            width: 10px;
-            height: 10px;
-            background: var(--border-color);
-            border-radius: 50%;
-            margin: 1rem 0;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+    /* Navigation dots */
+    .nav-dots {
+      position: fixed;
+      right: 2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 100;
+    }
 
-        .nav-dot:hover {
-            background: var(--amber-primary);
-            transform: scale(1.3);
-        }
+    .nav-dot {
+      width: 10px;
+      height: 10px;
+      background: var(--border-color);
+      border-radius: 50%;
+      margin: 1rem 0;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
 
-        /* Output boxes */
-        .output-box {
-            background: #0D1117;
-            border: 1px solid var(--amber-dark);
-            padding: 1.5rem;
-            margin: 1rem 0;
-            border-radius: 8px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
-            color: #8FE88F;
-        }
+    .nav-dot:hover {
+      background: var(--amber-primary);
+      transform: scale(1.3);
+    }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
+    /* Output boxes */
+    .output-box {
+      background: #0D1117;
+      border: 1px solid var(--amber-dark);
+      padding: 1.5rem;
+      margin: 1rem 0;
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      color: #8FE88F;
+    }
 
-        ::-webkit-scrollbar-track {
-            background: var(--bg-secondary);
-        }
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
 
-        ::-webkit-scrollbar-thumb {
-            background: var(--amber-dark);
-            border-radius: 5px;
-        }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-secondary);
+    }
 
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--amber-primary);
-        }
+    ::-webkit-scrollbar-thumb {
+      background: var(--amber-dark);
+      border-radius: 5px;
+    }
 
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 3rem 0;
-            border-top: 2px solid var(--border-color);
-            margin-top: 5rem;
-            color: var(--text-secondary);
-        }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--amber-primary);
+    }
 
-        /* Table of Contents Styling */
-        .toc-container {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 2rem;
-            margin: 2rem 0;
-        }
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 3rem 0;
+      border-top: 2px solid var(--border-color);
+      margin-top: 5rem;
+      color: var(--text-secondary);
+    }
 
-        .toc-section {
-            margin-bottom: 1.5rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid var(--border-color);
-        }
+    /* Table of Contents Styling */
+    .toc-container {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 2rem;
+      margin: 2rem 0;
+    }
 
-        .toc-section:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
+    .toc-section {
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+    }
 
-        .toc-main {
-            display: block;
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--amber-bright);
-            text-decoration: none;
-            margin-bottom: 0.5rem;
-            transition: all 0.3s ease;
-        }
+    .toc-section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
 
-        .toc-main:hover {
-            color: var(--amber-primary);
-            padding-left: 0.5rem;
-        }
+    .toc-main {
+      display: block;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--amber-bright);
+      text-decoration: none;
+      margin-bottom: 0.5rem;
+      transition: all 0.3s ease;
+    }
 
-        .toc-desc {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            margin-bottom: 0.5rem;
-        }
+    .toc-main:hover {
+      color: var(--amber-primary);
+      padding-left: 0.5rem;
+    }
 
-        .toc-sublist {
-            list-style: none;
-            margin-left: 1rem;
-            margin-top: 0.75rem;
-        }
+    .toc-desc {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+    }
 
-        .toc-sublist li {
-            margin-bottom: 0.5rem;
-        }
+    .toc-sublist {
+      list-style: none;
+      margin-left: 1rem;
+      margin-top: 0.75rem;
+    }
 
-        .toc-sublist a {
-            color: var(--text-primary);
-            text-decoration: none;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-            display: inline-block;
-        }
+    .toc-sublist li {
+      margin-bottom: 0.5rem;
+    }
 
-        .toc-sublist a:hover {
-            color: var(--amber-primary);
-            padding-left: 0.5rem;
-        }
+    .toc-sublist a {
+      color: var(--text-primary);
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      display: inline-block;
+    }
 
-        /* Back to Top Button */
-        .back-to-top {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background: var(--amber-primary);
-            color: var(--bg-dark);
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: none;
-            cursor: pointer;
-            font-size: 1.5rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 20px rgba(255, 179, 0, 0.4);
-            transition: all 0.3s ease;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-        }
+    .toc-sublist a:hover {
+      color: var(--amber-primary);
+      padding-left: 0.5rem;
+    }
 
-        .back-to-top.visible {
-            opacity: 1;
-            visibility: visible;
-        }
+    /* Back to Top Button */
+    .back-to-top {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--amber-primary);
+      color: var(--bg-dark);
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      font-size: 1.5rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(255, 179, 0, 0.4);
+      transition: all 0.3s ease;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+    }
 
-        .back-to-top:hover {
-            background: var(--amber-bright);
-            transform: translateY(-5px);
-            box-shadow: 0 6px 25px rgba(255, 179, 0, 0.6);
-        }
+    .back-to-top.visible {
+      opacity: 1;
+      visibility: visible;
+    }
 
-        .back-to-top:active {
-            transform: translateY(-2px);
-        }
+    .back-to-top:hover {
+      background: var(--amber-bright);
+      transform: translateY(-5px);
+      box-shadow: 0 6px 25px rgba(255, 179, 0, 0.6);
+    }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2.5rem;
-            }
-            
-            h2 {
-                font-size: 2rem;
-            }
-            
-            .container {
-                padding: 0 1rem;
-            }
-            
-            .nav-dots {
-                display: none;
-            }
+    .back-to-top:active {
+      transform: translateY(-2px);
+    }
 
-            .back-to-top {
-                bottom: 1rem;
-                right: 1rem;
-                width: 45px;
-                height: 45px;
-            }
-        }
+    /* Responsive */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2.5rem;
+      }
 
-        /* Highlight animation */
-        @keyframes highlight {
-            0% {
-                box-shadow: 0 0 0 0 rgba(255, 179, 0, 0.7);
-            }
-            70% {
-                box-shadow: 0 0 0 10px rgba(255, 179, 0, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(255, 179, 0, 0);
-            }
-        }
+      h2 {
+        font-size: 2rem;
+      }
 
-        .code-block.highlight {
-            animation: highlight 1s ease-out;
-        }
-    </style>
+      .container {
+        padding: 0 1rem;
+      }
+
+      .nav-dots {
+        display: none;
+      }
+
+      .back-to-top {
+        bottom: 1rem;
+        right: 1rem;
+        width: 45px;
+        height: 45px;
+      }
+    }
+
+    /* Highlight animation */
+    @keyframes highlight {
+      0% {
+        box-shadow: 0 0 0 0 rgba(255, 179, 0, 0.7);
+      }
+
+      70% {
+        box-shadow: 0 0 0 10px rgba(255, 179, 0, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(255, 179, 0, 0);
+      }
+    }
+
+    .code-block.highlight {
+      animation: highlight 1s ease-out;
+    }
+  </style>
 </head>
+
 <body>
-    <div class="container">
-        <header>
-            <h1>MongoDB for Accounting 341</h1>
-            <p class="subtitle">Prof. Qureshi Guide to CRUD Operations in Atlas</p>
-        </header>
+  <div class="container">
+    <header>
+      <h1>MongoDB for Accounting</h1>
+      <p class="subtitle">A Practical Guide to CRUD Operations in Atlas</p>
+    </header>
 
-        <!-- Back to Top Button -->
-        <button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
 
-        <!-- Table of Contents -->
-        <section id="toc">
-            <h2>Table of Contents</h2>
-            <div class="toc-container">
-                <div class="toc-section">
-                    <a href="#intro" class="toc-main">Introduction</a>
-                    <p class="toc-desc">Overview of MongoDB for accounting and what you'll learn in this tutorial</p>
-                </div>
+    <!-- Table of Contents -->
+    <section id="toc">
+      <h2>Table of Contents</h2>
+      <div class="toc-container">
+        <div class="toc-section">
+          <a href="#intro" class="toc-main">Introduction</a>
+          <p class="toc-desc">Overview of MongoDB for accounting and what you'll learn in this tutorial</p>
+        </div>
 
-                <div class="toc-section">
-                    <a href="#setup" class="toc-main">Step 1: Setting Up Your Dataset</a>
-                    <p class="toc-desc">Creating your database and inserting 25 sample financial transactions</p>
-                </div>
+        <div class="toc-section">
+          <a href="#setup" class="toc-main">Step 1: Setting Up Your Dataset</a>
+          <p class="toc-desc">Creating your database and inserting 25 sample financial transactions</p>
+        </div>
 
-                <div class="toc-section">
-                    <a href="#read-operations" class="toc-main">Step 2: Finding Records (SELECT/READ)</a>
-                    <p class="toc-desc">The most important operations - learning to query and filter data:</p>
-                    <ul class="toc-sublist">
-                        <li><a href="#basic-find">Basic Find Operations</a> - Find by status, type, and department</li>
-                        <li><a href="#comparison">Comparison Queries</a> - Finding records above/below amounts, date ranges</li>
-                        <li><a href="#multiple-conditions">Multiple Conditions</a> - Combining filters with AND logic</li>
-                        <li><a href="#or-logic">OR Logic</a> - Finding records that match any condition</li>
-                        <li><a href="#in-operator">Using $in</a> - Checking multiple values efficiently</li>
-                        <li><a href="#complex-queries">Complex Queries</a> - Combining AND/OR logic with dates and amounts</li>
-                    </ul>
-                </div>
+        <div class="toc-section">
+          <a href="#read-operations" class="toc-main">Step 2: Finding Records (SELECT/READ)</a>
+          <p class="toc-desc">The most important operations - learning to query and filter data:</p>
+          <ul class="toc-sublist">
+            <li><a href="#basic-find">Basic Find Operations</a> - Find by status, type, and department</li>
+            <li><a href="#comparison">Comparison Queries</a> - Finding records above/below amounts, date ranges</li>
+            <li><a href="#multiple-conditions">Multiple Conditions</a> - Combining filters with AND logic</li>
+            <li><a href="#or-logic">OR Logic</a> - Finding records that match any condition</li>
+            <li><a href="#in-operator">Using $in</a> - Checking multiple values efficiently</li>
+            <li><a href="#complex-queries">Complex Queries</a> - Combining AND/OR logic with dates and amounts</li>
+          </ul>
+        </div>
 
-                <div class="toc-section">
-                    <a href="#sorting" class="toc-main">Step 3: Sorting and Limiting Results</a>
-                    <p class="toc-desc">Organizing query results and showing only top records</p>
-                    <ul class="toc-sublist">
-                        <li><a href="#sorting-results">Sorting</a> - Order by amount, date (ascending/descending)</li>
-                        <li><a href="#limiting-results">Limiting</a> - Show only top N results</li>
-                    </ul>
-                </div>
+        <div class="toc-section">
+          <a href="#sorting" class="toc-main">Step 3: Sorting and Limiting Results</a>
+          <p class="toc-desc">Organizing query results and showing only top records</p>
+          <ul class="toc-sublist">
+            <li><a href="#sorting-results">Sorting</a> - Order by amount, date (ascending/descending)</li>
+            <li><a href="#limiting-results">Limiting</a> - Show only top N results</li>
+          </ul>
+        </div>
 
-                <div class="toc-section">
-                    <a href="#aggregation" class="toc-main">Step 4: Aggregation - Totals and Summaries</a>
-                    <p class="toc-desc">Calculating sums, averages, and creating financial reports:</p>
-                    <ul class="toc-sublist">
-                        <li><a href="#agg-by-type">Total by Transaction Type</a> - Sum amounts for invoices, expenses, payments</li>
-                        <li><a href="#agg-by-dept">Total by Department</a> - Analyze spending per department</li>
-                        <li><a href="#agg-monthly">Monthly Summary</a> - Group transactions by month</li>
-                        <li><a href="#agg-unpaid">Unpaid Invoice Analysis</a> - Calculate outstanding amounts by customer</li>
-                        <li><a href="#agg-category">Category Spending</a> - Detailed expense category breakdown</li>
-                    </ul>
-                </div>
+        <div class="toc-section">
+          <a href="#aggregation" class="toc-main">Step 4: Aggregation - Totals and Summaries</a>
+          <p class="toc-desc">Calculating sums, averages, and creating financial reports:</p>
+          <ul class="toc-sublist">
+            <li><a href="#agg-by-type">Total by Transaction Type</a> - Sum amounts for invoices, expenses, payments</li>
+            <li><a href="#agg-by-dept">Total by Department</a> - Analyze spending per department</li>
+            <li><a href="#agg-monthly">Monthly Summary</a> - Group transactions by month</li>
+            <li><a href="#agg-unpaid">Unpaid Invoice Analysis</a> - Calculate outstanding amounts by customer</li>
+            <li><a href="#agg-category">Category Spending</a> - Detailed expense category breakdown</li>
+          </ul>
+        </div>
 
-                <div class="toc-section">
-                    <a href="#create" class="toc-main">Step 5: Creating New Records (INSERT)</a>
-                    <p class="toc-desc">Adding new invoices and expenses to your database</p>
-                </div>
+        <div class="toc-section">
+          <a href="#create" class="toc-main">Step 5: Creating New Records (INSERT)</a>
+          <p class="toc-desc">Adding new invoices and expenses to your database</p>
+        </div>
 
-                <div class="toc-section">
-                    <a href="#update" class="toc-main">Step 6: Updating Records (UPDATE)</a>
-                    <p class="toc-desc">Modifying existing records - marking invoices as paid, approving expenses</p>
-                </div>
+        <div class="toc-section">
+          <a href="#update" class="toc-main">Step 6: Updating Records (UPDATE)</a>
+          <p class="toc-desc">Modifying existing records - marking invoices as paid, approving expenses</p>
+        </div>
 
-                <div class="toc-section">
-                    <a href="#delete" class="toc-main">Step 7: Deleting Records (DELETE)</a>
-                    <p class="toc-desc">Safely removing duplicate or incorrect transactions</p>
-                </div>
+        <div class="toc-section">
+          <a href="#delete" class="toc-main">Step 7: Deleting Records (DELETE)</a>
+          <p class="toc-desc">Safely removing duplicate or incorrect transactions</p>
+        </div>
 
-                <div class="toc-section">
-                    <a href="#summary" class="toc-main">Summary</a>
-                    <p class="toc-desc">Review of all concepts and next steps for further learning</p>
-                </div>
-            </div>
-        </section>
+        <div class="toc-section">
+          <a href="#summary" class="toc-main">Summary</a>
+          <p class="toc-desc">Review of all concepts and next steps for further learning</p>
+        </div>
+      </div>
+    </section>
 
-        <!-- Introduction -->
-        <section id="intro">
-            <h2>Welcome</h2>
-            <div class="intro-box">
-                <p>This tutorial will teach you how to work with accounting data in MongoDB Atlas using the online interface. You'll learn to create, read, update, and delete financial records using real-world accounting examples.</p>
-                <p><strong>What you'll learn:</strong></p>
-                <ul>
-                    <li>How to set up an accounting database in MongoDB Atlas</li>
-                    <li>Performing queries to find specific financial records</li>
-                    <li>Filtering, sorting, and analyzing accounting data</li>
-                    <li>Using aggregation to calculate totals and summaries</li>
-                    <li>Updating and managing financial information</li>
-                </ul>
-            </div>
+    <!-- Introduction -->
+    <section id="intro">
+      <h2>Welcome</h2>
+      <div class="intro-box">
+        <p>This tutorial will teach you how to work with accounting data in MongoDB Atlas using the online interface.
+          You'll learn to create, read, update, and delete financial records using real-world accounting examples.</p>
+        <p><strong>What you'll learn:</strong></p>
+        <ul>
+          <li>How to set up an accounting database in MongoDB Atlas</li>
+          <li>Performing queries to find specific financial records</li>
+          <li>Filtering, sorting, and analyzing accounting data</li>
+          <li>Using aggregation to calculate totals and summaries</li>
+          <li>Updating and managing financial information</li>
+        </ul>
+      </div>
 
-            <div class="info-box">
-                <strong>🔍 What is MongoDB?</strong>
-                <p>MongoDB is a NoSQL database that stores data in flexible, JSON-like documents. Unlike traditional spreadsheets or SQL databases with rigid rows and columns, MongoDB allows you to store complex financial data naturally, just like you might organize information in nested folders.</p>
-            </div>
-        </section>
+      <div class="info-box">
+        <strong>🔍 What is MongoDB?</strong>
+        <p>MongoDB is a NoSQL database that stores data in flexible, JSON-like documents. Unlike traditional
+          spreadsheets or SQL databases with rigid rows and columns, MongoDB allows you to store complex financial data
+          naturally, just like you might organize information in nested folders.</p>
+      </div>
+    </section>
 
-        <!-- Dataset Setup -->
-        <section id="setup">
-            <h2>Step 1: Setting Up Your Dataset</h2>
-            
-            <div class="step-box">
-                <p><span class="step-number">1</span> Log into <strong>MongoDB Atlas</strong> and navigate to your cluster</p>
-            </div>
-            
-            <div class="step-box">
-                <p><span class="step-number">2</span> Click <strong>"Browse Collections"</strong></p>
-            </div>
-            
-            <div class="step-box">
-                <p><span class="step-number">3</span> Create a new database called <code>accounting_db</code></p>
-            </div>
-            
-            <div class="step-box">
-                <p><span class="step-number">4</span> Create a collection called <code>transactions</code></p>
-            </div>
+    <!-- Dataset Setup -->
+    <section id="setup">
+      <h2>Step 1: Setting Up Your Dataset</h2>
 
-            <h3>Sample Dataset: Financial Transactions</h3>
-            <p>Copy the following JSON data and insert it into your <code>transactions</code> collection. This dataset contains 25 financial transactions including invoices, expenses, payments, and journal entries.</p>
+      <div class="step-box">
+        <p><span class="step-number">1</span> Log into <strong>MongoDB Atlas</strong> and navigate to your cluster</p>
+      </div>
 
-            <div class="info-box">
-                <strong>💡 How to insert this data:</strong>
-                <ol>
-                    <li>Click the "INSERT DOCUMENT" button in Atlas</li>
-                    <li>Switch to the "JSON" view (not the visual editor)</li>
-                    <li>Delete the default content</li>
-                    <li>Paste the JSON below</li>
-                    <li>Click "Insert"</li>
-                    <li>Repeat for each document (or insert multiple at once if your Atlas version supports it)</li>
-                </ol>
-            </div>
+      <div class="step-box">
+        <p><span class="step-number">2</span> Click <strong>"Browse Collections"</strong></p>
+      </div>
 
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Financial Transactions Dataset (25 records)</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>[
+      <div class="step-box">
+        <p><span class="step-number">3</span> Create a new database called <code>accounting_db</code></p>
+      </div>
+
+      <div class="step-box">
+        <p><span class="step-number">4</span> Create a collection called <code>transactions</code></p>
+      </div>
+
+      <h3>Sample Dataset: Financial Transactions</h3>
+      <p>Copy the following JSON data and insert it into your <code>transactions</code> collection. This dataset
+        contains 25 financial transactions including invoices, expenses, payments, and journal entries.</p>
+
+      <p><strong>Note:</strong> The data below is formatted as an array of 25 documents. If inserting one at a time
+        using the GUI, copy each transaction individually (without the surrounding square brackets <code>[]</code>). If
+        using mongosh for bulk insert, copy the entire array including the brackets.</p>
+
+      <div class="info-box">
+        <strong>💡 How to insert this data:</strong>
+        <p><strong>Important:</strong> Atlas's "INSERT DOCUMENT" button inserts ONE document at a time. You have two
+          options:</p>
+
+        <p><strong>Option 1 - Insert Documents One at a Time (Recommended for Beginners):</strong></p>
+        <ol>
+          <li>Click the "INSERT DOCUMENT" button in Atlas</li>
+          <li>Switch to the "JSON" view (not the visual editor)</li>
+          <li>Delete the default content including the brackets <code>{}</code></li>
+          <li>Copy ONE transaction from the dataset below (including its curly braces <code>{}</code>)</li>
+          <li>Paste it into the editor</li>
+          <li>Click "Insert"</li>
+          <li>Repeat for all 25 transactions</li>
+        </ol>
+
+        <p><strong>Option 2 - Bulk Insert Using mongosh (Advanced):</strong></p>
+        <ol>
+          <li>In Atlas, click "Connect" → "Shell"</li>
+          <li>Copy the entire array below (all 25 records with brackets <code>[]</code>)</li>
+          <li>In the shell, type: <code>db.transactions.insertMany(</code></li>
+          <li>Paste the array</li>
+          <li>Type the closing parenthesis: <code>)</code></li>
+          <li>Press Enter</li>
+        </ol>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Financial Transactions Dataset (25 records)</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>[
   {
     "transactionId": "TRX001",
     "type": "invoice",
@@ -924,220 +956,224 @@
     "billingPeriod": "Monthly"
   }
 ]</code></pre>
-            </div>
+      </div>
 
-            <div class="info-box">
-                <strong>📊 Understanding the Data Structure:</strong>
-                <p>Each transaction document contains:</p>
-                <ul>
-                    <li><strong>transactionId:</strong> Unique identifier for each transaction</li>
-                    <li><strong>type:</strong> Category (invoice, expense, payment)</li>
-                    <li><strong>date:</strong> Transaction date in YYYY-MM-DD format</li>
-                    <li><strong>amount:</strong> Transaction value in dollars</li>
-                    <li><strong>status:</strong> Current state (paid, unpaid, pending, approved)</li>
-                    <li><strong>category:</strong> Expense classification</li>
-                    <li><strong>department:</strong> Which department initiated the transaction</li>
-                </ul>
-            </div>
-        </section>
+      <div class="info-box">
+        <strong>📊 Understanding the Data Structure:</strong>
+        <p>Each transaction document contains:</p>
+        <ul>
+          <li><strong>transactionId:</strong> Unique identifier for each transaction</li>
+          <li><strong>type:</strong> Category (invoice, expense, payment)</li>
+          <li><strong>date:</strong> Transaction date in YYYY-MM-DD format</li>
+          <li><strong>amount:</strong> Transaction value in dollars</li>
+          <li><strong>status:</strong> Current state (paid, unpaid, pending, approved)</li>
+          <li><strong>category:</strong> Expense classification</li>
+          <li><strong>department:</strong> Which department initiated the transaction</li>
+        </ul>
+      </div>
+    </section>
 
-        <!-- CRUD Operations - READ/FIND (Most Important) -->
-        <section id="read-operations">
-            <h2>Step 2: Finding Records (SELECT/READ Operations)</h2>
-            
-            <p>The most common operation you'll perform is searching for specific records. In MongoDB, we use the <strong>Filter</strong> box in Atlas to find documents that match certain criteria.</p>
+    <!-- CRUD Operations - READ/FIND (Most Important) -->
+    <section id="read-operations">
+      <h2>Step 2: Finding Records (SELECT/READ Operations)</h2>
 
-            <h3 id="basic-find">Basic Find Operations</h3>
+      <p>The most common operation you'll perform is searching for specific records. In MongoDB, we use the
+        <strong>Filter</strong> box in Atlas to find documents that match certain criteria.</p>
 
-            <div class="step-box">
-                <p><strong>How to use these filters:</strong></p>
-                <ol>
-                    <li>In Atlas, go to your <code>transactions</code> collection</li>
-                    <li>Look for the "FILTER" box at the top</li>
-                    <li>Copy and paste any filter below</li>
-                    <li>Click "FIND" or press Enter</li>
-                </ol>
-            </div>
+      <h3 id="basic-find">Basic Find Operations</h3>
 
-            <h3>Example 1: Find All Paid Transactions</h3>
-            <p>This query finds all transactions where the status is "paid".</p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Filter: Find paid transactions</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{ "status": "paid" }</code></pre>
-            </div>
-            <div class="output-box">
-                Expected Result: Returns all transactions with status = "paid" (about 13 records)
-            </div>
+      <div class="step-box">
+        <p><strong>How to use these filters:</strong></p>
+        <ol>
+          <li>In Atlas, go to your <code>transactions</code> collection</li>
+          <li>Look for the "FILTER" box at the top</li>
+          <li>Copy and paste any filter below</li>
+          <li>Click "FIND" or press Enter</li>
+        </ol>
+      </div>
 
-            <h3>Example 2: Find Transactions by Type</h3>
-            <p>Find all invoices in the system.</p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Filter: Find all invoices</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{ "type": "invoice" }</code></pre>
-            </div>
-            <div class="output-box">
-                Expected Result: Returns 8 invoice records
-            </div>
+      <h3>Example 1: Find All Paid Transactions</h3>
+      <p>This query finds all transactions where the status is "paid".</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Filter: Find paid transactions</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{ "status": "paid" }</code></pre>
+      </div>
+      <div class="output-box">
+        Expected Result: Returns all transactions with status = "paid" (14 records)
+      </div>
 
-            <h3>Example 3: Find Transactions by Department</h3>
-            <p>Find all transactions from the IT department.</p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Filter: Find IT department transactions</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{ "department": "IT" }</code></pre>
-            </div>
-            <div class="output-box">
-                Expected Result: Returns 3 IT department transactions
-            </div>
+      <h3>Example 2: Find Transactions by Type</h3>
+      <p>Find all invoices in the system.</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Filter: Find all invoices</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{ "type": "invoice" }</code></pre>
+      </div>
+      <div class="output-box">
+        Expected Result: Returns 8 invoice records
+      </div>
 
-            <h3 id="comparison">Example 4: Find Transactions Above a Certain Amount</h3>
-            <p>Find all transactions greater than $2,000. The <code>$gt</code> means "greater than".</p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Filter: Find transactions over $2,000</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{ "amount": { "$gt": 2000 } }</code></pre>
-            </div>
-            <div class="info-box">
-                <strong>💡 Comparison Operators:</strong>
-                <ul>
-                    <li><code>$gt</code> - greater than</li>
-                    <li><code>$gte</code> - greater than or equal to</li>
-                    <li><code>$lt</code> - less than</li>
-                    <li><code>$lte</code> - less than or equal to</li>
-                    <li><code>$eq</code> - equal to</li>
-                    <li><code>$ne</code> - not equal to</li>
-                </ul>
-            </div>
+      <h3>Example 3: Find Transactions by Department</h3>
+      <p>Find all transactions from the IT department.</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Filter: Find IT department transactions</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{ "department": "IT" }</code></pre>
+      </div>
+      <div class="output-box">
+        Expected Result: Returns 3 IT department transactions
+      </div>
 
-            <h3>Example 5: Find Transactions in a Range</h3>
-            <p>Find transactions between $500 and $1,500.</p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Filter: Find transactions between $500-$1,500</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{ "amount": { "$gte": 500, "$lte": 1500 } }</code></pre>
-            </div>
-            <div class="output-box">
-                Expected Result: Returns transactions with amounts between $500 and $1,500
-            </div>
+      <h3 id="comparison">Example 4: Find Transactions Above a Certain Amount</h3>
+      <p>Find all transactions greater than $2,000. The <code>$gt</code> means "greater than".</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Filter: Find transactions over $2,000</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{ "amount": { "$gt": 2000 } }</code></pre>
+      </div>
+      <div class="info-box">
+        <strong>💡 Comparison Operators:</strong>
+        <ul>
+          <li><code>$gt</code> - greater than</li>
+          <li><code>$gte</code> - greater than or equal to</li>
+          <li><code>$lt</code> - less than</li>
+          <li><code>$lte</code> - less than or equal to</li>
+          <li><code>$eq</code> - equal to</li>
+          <li><code>$ne</code> - not equal to</li>
+        </ul>
+      </div>
 
-            <h3>Example 6: Find by Date</h3>
-            <p>Find all transactions from March 2024.</p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Filter: Find March 2024 transactions</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{ "date": { "$gte": "2024-03-01", "$lte": "2024-03-31" } }</code></pre>
-            </div>
-            <div class="output-box">
-                Expected Result: Returns all March 2024 transactions (about 13 records)
-            </div>
+      <h3>Example 5: Find Transactions in a Range</h3>
+      <p>Find transactions between $500 and $1,500.</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Filter: Find transactions between $500-$1,500</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{ "amount": { "$gte": 500, "$lte": 1500 } }</code></pre>
+      </div>
+      <div class="output-box">
+        Expected Result: Returns transactions with amounts between $500 and $1,500
+      </div>
 
-            <h3 id="multiple-conditions">Multiple Conditions (AND Logic)</h3>
+      <h3>Example 6: Find by Date</h3>
+      <p>Find all transactions from March 2024.</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Filter: Find March 2024 transactions</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{ "date": { "$gte": "2024-03-01", "$lte": "2024-03-31" } }</code></pre>
+      </div>
+      <div class="output-box">
+        Expected Result: Returns all March 2024 transactions (11 records)
+      </div>
 
-            <h3>Example 7: Find Unpaid Invoices</h3>
-            <p>Find invoices that haven't been paid yet. This uses two conditions: type must be "invoice" AND status must be "unpaid".</p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Filter: Find unpaid invoices</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{ "type": "invoice", "status": "unpaid" }</code></pre>
-            </div>
-            <div class="output-box">
-                Expected Result: Returns invoices with unpaid status (3 records)
-            </div>
+      <h3 id="multiple-conditions">Multiple Conditions (AND Logic)</h3>
 
-            <h3>Example 8: Find High-Value Unpaid Transactions</h3>
-            <p>Find unpaid transactions over $1,000. This combines status and amount conditions.</p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Filter: Find unpaid transactions over $1,000</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{ "status": "unpaid", "amount": { "$gt": 1000 } }</code></pre>
-            </div>
+      <h3>Example 7: Find Unpaid Invoices</h3>
+      <p>Find invoices that haven't been paid yet. This uses two conditions: type must be "invoice" AND status must be
+        "unpaid".</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Filter: Find unpaid invoices</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{ "type": "invoice", "status": "unpaid" }</code></pre>
+      </div>
+      <div class="output-box">
+        Expected Result: Returns invoices with unpaid status (4 records)
+      </div>
 
-            <h3>Example 9: Find Marketing Expenses in Date Range</h3>
-            <p>Find Marketing department transactions from February 2024.</p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Filter: Find Marketing transactions in February</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{ "department": "Sales & Marketing", "date": { "$gte": "2024-02-01", "$lte": "2024-02-28" } }</code></pre>
-            </div>
+      <h3>Example 8: Find High-Value Unpaid Transactions</h3>
+      <p>Find unpaid transactions over $1,000. This combines status and amount conditions.</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Filter: Find unpaid transactions over $1,000</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{ "status": "unpaid", "amount": { "$gt": 1000 } }</code></pre>
+      </div>
 
-            <h3 id="or-logic">OR Logic - Finding Multiple Options</h3>
+      <h3>Example 9: Find Marketing Expenses in Date Range</h3>
+      <p>Find Marketing department transactions from February 2024.</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Filter: Find Marketing transactions in February</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{ "department": "Sales & Marketing", "date": { "$gte": "2024-02-01", "$lte": "2024-02-28" } }</code></pre>
+      </div>
 
-            <h3>Example 10: Find Either Paid or Approved Transactions</h3>
-            <p>Find transactions that are either paid OR approved. The <code>$or</code> operator checks if ANY condition is true.</p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Filter: Find paid or approved transactions</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{ "$or": [ { "status": "paid" }, { "status": "approved" } ] }</code></pre>
-            </div>
-            <div class="info-box">
-                <strong>💡 Understanding $or:</strong>
-                <p>The <code>$or</code> operator takes an array (list) of conditions in square brackets <code>[ ]</code>. MongoDB returns documents that match ANY of the conditions.</p>
-            </div>
+      <h3 id="or-logic">OR Logic - Finding Multiple Options</h3>
 
-            <h3>Example 11: Find Multiple Departments</h3>
-            <p>Find transactions from either IT or Finance departments.</p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Filter: Find IT or Finance transactions</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{ "$or": [ { "department": "IT" }, { "department": "Finance" } ] }</code></pre>
-            </div>
+      <h3>Example 10: Find Either Paid or Approved Transactions</h3>
+      <p>Find transactions that are either paid OR approved. The <code>$or</code> operator checks if ANY condition is
+        true.</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Filter: Find paid or approved transactions</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{ "$or": [ { "status": "paid" }, { "status": "approved" } ] }</code></pre>
+      </div>
+      <div class="info-box">
+        <strong>💡 Understanding $or:</strong>
+        <p>The <code>$or</code> operator takes an array (list) of conditions in square brackets <code>[ ]</code>.
+          MongoDB returns documents that match ANY of the conditions.</p>
+      </div>
 
-            <h3 id="in-operator">Using $in for Multiple Values</h3>
+      <h3>Example 11: Find Multiple Departments</h3>
+      <p>Find transactions from either IT or Finance departments.</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Filter: Find IT or Finance transactions</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{ "$or": [ { "department": "IT" }, { "department": "Finance" } ] }</code></pre>
+      </div>
 
-            <h3>Example 12: Find Multiple Transaction Types</h3>
-            <p>A simpler way to check multiple values for the same field using <code>$in</code>.</p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Filter: Find invoices or payments</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{ "type": { "$in": ["invoice", "payment"] } }</code></pre>
-            </div>
+      <h3 id="in-operator">Using $in for Multiple Values</h3>
 
-            <h3>Example 13: Find Multiple Status Values</h3>
-            <p>Find transactions that are pending, approved, or unpaid.</p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Filter: Find non-paid transactions</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{ "status": { "$in": ["pending", "approved", "unpaid"] } }</code></pre>
-            </div>
+      <h3>Example 12: Find Multiple Transaction Types</h3>
+      <p>A simpler way to check multiple values for the same field using <code>$in</code>.</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Filter: Find invoices or payments</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{ "type": { "$in": ["invoice", "payment"] } }</code></pre>
+      </div>
 
-            <h3 id="complex-queries">Complex Queries</h3>
+      <h3>Example 13: Find Multiple Status Values</h3>
+      <p>Find transactions that are pending, approved, or unpaid.</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Filter: Find non-paid transactions</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{ "status": { "$in": ["pending", "approved", "unpaid"] } }</code></pre>
+      </div>
 
-            <h3>Example 14: Combining AND and OR Logic</h3>
-            <p>Find unpaid transactions from either Sales & Marketing or IT departments that are over $500.</p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Filter: Complex multi-condition query</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{ 
+      <h3 id="complex-queries">Complex Queries</h3>
+
+      <h3>Example 14: Combining AND and OR Logic</h3>
+      <p>Find unpaid transactions from either Sales & Marketing or IT departments that are over $500.</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Filter: Complex multi-condition query</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{ 
   "status": "unpaid", 
   "amount": { "$gt": 500 },
   "$or": [ 
@@ -1145,278 +1181,280 @@
     { "department": "IT" } 
   ]
 }</code></pre>
-            </div>
+      </div>
 
-            <h3>Example 15: Date Range with Category Filter</h3>
-            <p>Find all Capital Expenditures from Q1 2024 (January through March).</p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Filter: Q1 capital expenditures</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{ 
+      <h3>Example 15: Date Range with Category Filter</h3>
+      <p>Find all Capital Expenditures from Q1 2024 (January through March).</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Filter: Q1 capital expenditures</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{ 
   "category": "Capital Expenditure",
   "date": { "$gte": "2024-01-01", "$lte": "2024-03-31" }
 }</code></pre>
-            </div>
+      </div>
 
-        </section>
+    </section>
 
-        <!-- Sorting and Limiting -->
-        <section id="sorting">
-            <h2>Step 3: Sorting and Limiting Results</h2>
+    <!-- Sorting and Limiting -->
+    <section id="sorting">
+      <h2>Step 3: Sorting and Limiting Results</h2>
 
-            <h3 id="sorting-results">Sorting Results</h3>
-            <p>You can sort results in Atlas using the "Options" dropdown next to the Filter box.</p>
+      <h3 id="sorting-results">Sorting Results</h3>
+      <p>You can sort results in Atlas using the "Options" dropdown next to the Filter box.</p>
 
-            <div class="step-box">
-                <p><strong>How to sort:</strong></p>
-                <ol>
-                    <li>Click "Options" next to the FILTER box</li>
-                    <li>Find the "SORT" field</li>
-                    <li>Paste the sort code below</li>
-                    <li>Click "FIND"</li>
-                </ol>
-            </div>
+      <div class="step-box">
+        <p><strong>How to sort:</strong></p>
+        <ol>
+          <li>Click "Options" next to the FILTER box</li>
+          <li>Find the "SORT" field</li>
+          <li>Paste the sort code below</li>
+          <li>Click "FIND"</li>
+        </ol>
+      </div>
 
-            <h3>Example 16: Sort by Amount (Highest First)</h3>
-            <p>Sort all transactions by amount in descending order (highest to lowest). Use <code>-1</code> for descending.</p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Sort: Highest amounts first</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{ "amount": -1 }</code></pre>
-            </div>
+      <h3>Example 16: Sort by Amount (Highest First)</h3>
+      <p>Sort all transactions by amount in descending order (highest to lowest). Use <code>-1</code> for descending.
+      </p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Sort: Highest amounts first</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{ "amount": -1 }</code></pre>
+      </div>
 
-            <h3>Example 17: Sort by Date (Newest First)</h3>
-            <p>Sort transactions by date, most recent first.</p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Sort: Newest transactions first</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{ "date": -1 }</code></pre>
-            </div>
+      <h3>Example 17: Sort by Date (Newest First)</h3>
+      <p>Sort transactions by date, most recent first.</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Sort: Newest transactions first</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{ "date": -1 }</code></pre>
+      </div>
 
-            <h3>Example 18: Sort by Amount (Lowest First)</h3>
-            <p>Sort by amount ascending (lowest to highest). Use <code>1</code> for ascending.</p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Sort: Lowest amounts first</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{ "amount": 1 }</code></pre>
-            </div>
+      <h3>Example 18: Sort by Amount (Lowest First)</h3>
+      <p>Sort by amount ascending (lowest to highest). Use <code>1</code> for ascending.</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Sort: Lowest amounts first</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{ "amount": 1 }</code></pre>
+      </div>
 
-            <h3 id="limiting-results">Limiting Results</h3>
-            <p>Sometimes you only want to see the top results. Use the "LIMIT" option.</p>
+      <h3 id="limiting-results">Limiting Results</h3>
+      <p>Sometimes you only want to see the top results. Use the "LIMIT" option.</p>
 
-            <div class="step-box">
-                <p><strong>How to limit:</strong></p>
-                <ol>
-                    <li>Click "Options" next to the FILTER box</li>
-                    <li>Find the "LIMIT" field</li>
-                    <li>Enter a number (e.g., 5, 10, 20)</li>
-                    <li>Click "FIND"</li>
-                </ol>
-            </div>
+      <div class="step-box">
+        <p><strong>How to limit:</strong></p>
+        <ol>
+          <li>Click "Options" next to the FILTER box</li>
+          <li>Find the "LIMIT" field</li>
+          <li>Enter a number (e.g., 5, 10, 20)</li>
+          <li>Click "FIND"</li>
+        </ol>
+      </div>
 
-            <h3>Example 19: Top 5 Highest Transactions</h3>
-            <p><strong>Filter:</strong> (leave empty to get all)</p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Filter: All records</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{}</code></pre>
-            </div>
-            <p><strong>Sort:</strong></p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Sort: By amount descending</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{ "amount": -1 }</code></pre>
-            </div>
-            <p><strong>Limit:</strong> Enter <code>5</code> in the LIMIT field</p>
+      <h3>Example 19: Top 5 Highest Transactions</h3>
+      <p><strong>Filter:</strong> (leave empty to get all)</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Filter: All records</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{}</code></pre>
+      </div>
+      <p><strong>Sort:</strong></p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Sort: By amount descending</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{ "amount": -1 }</code></pre>
+      </div>
+      <p><strong>Limit:</strong> Enter <code>5</code> in the LIMIT field</p>
 
-            <h3>Example 20: Recent Unpaid Invoices</h3>
-            <p>Find the 3 most recent unpaid invoices.</p>
-            <p><strong>Filter:</strong></p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Filter: Unpaid invoices</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{ "type": "invoice", "status": "unpaid" }</code></pre>
-            </div>
-            <p><strong>Sort:</strong></p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Sort: By date descending</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{ "date": -1 }</code></pre>
-            </div>
-            <p><strong>Limit:</strong> Enter <code>3</code></p>
+      <h3>Example 20: Recent Unpaid Invoices</h3>
+      <p>Find the 3 most recent unpaid invoices.</p>
+      <p><strong>Filter:</strong></p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Filter: Unpaid invoices</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{ "type": "invoice", "status": "unpaid" }</code></pre>
+      </div>
+      <p><strong>Sort:</strong></p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Sort: By date descending</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{ "date": -1 }</code></pre>
+      </div>
+      <p><strong>Limit:</strong> Enter <code>3</code></p>
 
-        </section>
+    </section>
 
-        <!-- Aggregation -->
-        <section id="aggregation">
-            <h2>Step 4: Aggregation - Calculating Totals and Summaries</h2>
+    <!-- Aggregation -->
+    <section id="aggregation">
+      <h2>Step 4: Aggregation - Calculating Totals and Summaries</h2>
 
-            <p>Aggregation allows you to calculate sums, averages, counts, and create summary reports. In Atlas, you'll use the "Aggregation" tab.</p>
+      <p>Aggregation allows you to calculate sums, averages, counts, and create summary reports. In Atlas, you'll use
+        the "Aggregation" tab.</p>
 
-            <div class="step-box">
-                <p><strong>How to run aggregations:</strong></p>
-                <ol>
-                    <li>In your collection view, click the "AGGREGATION" tab (next to FIND)</li>
-                    <li>You'll see a pipeline builder</li>
-                    <li>Click "Add Stage" for each step below</li>
-                    <li>Select the stage type (e.g., $match, $group)</li>
-                    <li>Paste the code for that stage</li>
-                    <li>Click "Run" to see results</li>
-                </ol>
-            </div>
+      <div class="step-box">
+        <p><strong>How to run aggregations:</strong></p>
+        <ol>
+          <li>In your collection view, click the "AGGREGATION" tab (next to FIND)</li>
+          <li>You'll see a pipeline builder</li>
+          <li>Click "Add Stage" for each step below</li>
+          <li>Select the stage type (e.g., $match, $group)</li>
+          <li>Paste the code for that stage</li>
+          <li>Click "Run" to see results</li>
+        </ol>
+      </div>
 
-            <h3 id="agg-by-type">Example 21: Total Amount by Transaction Type</h3>
-            <p>Calculate the total amount for each transaction type (invoice, expense, payment).</p>
-            
-            <p><strong>Stage 1: $group</strong></p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Aggregation Stage: Group by type and sum amounts</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{
+      <h3 id="agg-by-type">Example 21: Total Amount by Transaction Type</h3>
+      <p>Calculate the total amount for each transaction type (invoice, expense, payment).</p>
+
+      <p><strong>Stage 1: $group</strong></p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Aggregation Stage: Group by type and sum amounts</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{
   "_id": "$type",
   "totalAmount": { "$sum": "$amount" },
   "count": { "$sum": 1 }
 }</code></pre>
-            </div>
+      </div>
 
-            <div class="info-box">
-                <strong>💡 Understanding Aggregation:</strong>
-                <ul>
-                    <li><code>_id</code> - The field to group by (here we're grouping by type)</li>
-                    <li><code>$sum: "$amount"</code> - Add up all the amount values</li>
-                    <li><code>$sum: 1</code> - Count how many records in each group</li>
-                </ul>
-            </div>
+      <div class="info-box">
+        <strong>💡 Understanding Aggregation:</strong>
+        <ul>
+          <li><code>_id</code> - The field to group by (here we're grouping by type)</li>
+          <li><code>$sum: "$amount"</code> - Add up all the amount values</li>
+          <li><code>$sum: 1</code> - Count how many records in each group</li>
+        </ul>
+      </div>
 
-            <h3 id="agg-by-dept">Example 22: Total Spending by Department</h3>
-            <p>See how much each department has spent.</p>
-            
-            <p><strong>Stage 1: $group</strong></p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Aggregation Stage: Group by department</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{
+      <h3 id="agg-by-dept">Example 22: Total Spending by Department</h3>
+      <p>See how much each department has spent.</p>
+
+      <p><strong>Stage 1: $group</strong></p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Aggregation Stage: Group by department</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{
   "_id": "$department",
   "totalSpent": { "$sum": "$amount" },
   "numberOfTransactions": { "$sum": 1 },
   "averageAmount": { "$avg": "$amount" }
 }</code></pre>
-            </div>
+      </div>
 
-            <p><strong>Stage 2: $sort (to see highest spending first)</strong></p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Aggregation Stage: Sort results</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{ "totalSpent": -1 }</code></pre>
-            </div>
+      <p><strong>Stage 2: $sort (to see highest spending first)</strong></p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Aggregation Stage: Sort results</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{ "totalSpent": -1 }</code></pre>
+      </div>
 
-            <h3 id="agg-monthly">Example 23: Monthly Transaction Summary</h3>
-            <p>Get a breakdown of transactions by month. This uses a more complex grouping.</p>
+      <h3 id="agg-monthly">Example 23: Monthly Transaction Summary</h3>
+      <p>Get a breakdown of transactions by month. This uses a more complex grouping.</p>
 
-            <p><strong>Stage 1: $group</strong></p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Aggregation Stage: Group by month</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{
+      <p><strong>Stage 1: $group</strong></p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Aggregation Stage: Group by month</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{
   "_id": { 
     "$substr": ["$date", 0, 7] 
   },
   "totalAmount": { "$sum": "$amount" },
   "transactionCount": { "$sum": 1 }
 }</code></pre>
-            </div>
+      </div>
 
-            <div class="info-box">
-                <strong>💡 $substr Explained:</strong>
-                <p>The <code>$substr</code> function extracts part of a string. Here, <code>["$date", 0, 7]</code> means:</p>
-                <ul>
-                    <li>Take the date field (e.g., "2024-03-15")</li>
-                    <li>Start at position 0</li>
-                    <li>Take 7 characters (result: "2024-03")</li>
-                </ul>
-                <p>This groups all transactions from the same month together.</p>
-            </div>
+      <div class="info-box">
+        <strong>💡 $substr Explained:</strong>
+        <p>The <code>$substr</code> function extracts part of a string. Here, <code>["$date", 0, 7]</code> means:</p>
+        <ul>
+          <li>Take the date field (e.g., "2024-03-15")</li>
+          <li>Start at position 0</li>
+          <li>Take 7 characters (result: "2024-03")</li>
+        </ul>
+        <p>This groups all transactions from the same month together.</p>
+      </div>
 
-            <p><strong>Stage 2: $sort</strong></p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Aggregation Stage: Sort by month</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{ "_id": 1 }</code></pre>
-            </div>
+      <p><strong>Stage 2: $sort</strong></p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Aggregation Stage: Sort by month</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{ "_id": 1 }</code></pre>
+      </div>
 
-            <h3 id="agg-unpaid">Example 24: Unpaid Invoice Analysis</h3>
-            <p>Calculate total unpaid invoices by customer and show which are overdue.</p>
+      <h3 id="agg-unpaid">Example 24: Unpaid Invoice Analysis</h3>
+      <p>Calculate total unpaid invoices by customer and show which are overdue.</p>
 
-            <p><strong>Stage 1: $match (filter for unpaid invoices)</strong></p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Aggregation Stage: Filter unpaid invoices</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{
+      <p><strong>Stage 1: $match (filter for unpaid invoices)</strong></p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Aggregation Stage: Filter unpaid invoices</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{
   "type": "invoice",
   "status": "unpaid"
 }</code></pre>
-            </div>
+      </div>
 
-            <p><strong>Stage 2: $group (sum by customer)</strong></p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Aggregation Stage: Group by customer</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{
+      <p><strong>Stage 2: $group (sum by customer)</strong></p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Aggregation Stage: Group by customer</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{
   "_id": "$customer",
   "totalOwed": { "$sum": "$amount" },
   "invoiceCount": { "$sum": 1 }
 }</code></pre>
-            </div>
+      </div>
 
-            <p><strong>Stage 3: $sort</strong></p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Aggregation Stage: Sort by amount owed</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{ "totalOwed": -1 }</code></pre>
-            </div>
+      <p><strong>Stage 3: $sort</strong></p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Aggregation Stage: Sort by amount owed</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{ "totalOwed": -1 }</code></pre>
+      </div>
 
-            <h3 id="agg-category">Example 25: Category Spending Analysis</h3>
-            <p>Analyze spending by category, showing total, count, and average transaction size.</p>
+      <h3 id="agg-category">Example 25: Category Spending Analysis</h3>
+      <p>Analyze spending by category, showing total, count, and average transaction size.</p>
 
-            <p><strong>Stage 1: $group</strong></p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Aggregation Stage: Group by category</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{
+      <p><strong>Stage 1: $group</strong></p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Aggregation Stage: Group by category</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{
   "_id": "$category",
   "totalSpending": { "$sum": "$amount" },
   "transactionCount": { "$sum": 1 },
@@ -1424,54 +1462,54 @@
   "maxTransaction": { "$max": "$amount" },
   "minTransaction": { "$min": "$amount" }
 }</code></pre>
-            </div>
+      </div>
 
-            <p><strong>Stage 2: $sort</strong></p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Aggregation Stage: Sort by total spending</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{ "totalSpending": -1 }</code></pre>
-            </div>
+      <p><strong>Stage 2: $sort</strong></p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Aggregation Stage: Sort by total spending</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{ "totalSpending": -1 }</code></pre>
+      </div>
 
-            <div class="info-box">
-                <strong>💡 Aggregation Operators Summary:</strong>
-                <ul>
-                    <li><code>$sum</code> - Add values together</li>
-                    <li><code>$avg</code> - Calculate average</li>
-                    <li><code>$max</code> - Find maximum value</li>
-                    <li><code>$min</code> - Find minimum value</li>
-                    <li><code>$count</code> - Count documents</li>
-                </ul>
-            </div>
+      <div class="info-box">
+        <strong>💡 Aggregation Operators Summary:</strong>
+        <ul>
+          <li><code>$sum</code> - Add values together</li>
+          <li><code>$avg</code> - Calculate average</li>
+          <li><code>$max</code> - Find maximum value</li>
+          <li><code>$min</code> - Find minimum value</li>
+          <li><code>$count</code> - Count documents</li>
+        </ul>
+      </div>
 
-        </section>
+    </section>
 
-        <!-- CREATE Operations -->
-        <section id="create">
-            <h2>Step 5: Creating New Records (INSERT)</h2>
+    <!-- CREATE Operations -->
+    <section id="create">
+      <h2>Step 5: Creating New Records (INSERT)</h2>
 
-            <p>Adding new transactions to your database is simple in Atlas.</p>
+      <p>Adding new transactions to your database is simple in Atlas.</p>
 
-            <div class="step-box">
-                <p><strong>How to insert a document:</strong></p>
-                <ol>
-                    <li>In your collection view, click "INSERT DOCUMENT"</li>
-                    <li>Switch to "JSON" view at the top</li>
-                    <li>Delete the default content</li>
-                    <li>Paste the JSON below</li>
-                    <li>Click "Insert"</li>
-                </ol>
-            </div>
+      <div class="step-box">
+        <p><strong>How to insert a document:</strong></p>
+        <ol>
+          <li>In your collection view, click "INSERT DOCUMENT"</li>
+          <li>Switch to "JSON" view at the top</li>
+          <li>Delete the default content</li>
+          <li>Paste the JSON below</li>
+          <li>Click "Insert"</li>
+        </ol>
+      </div>
 
-            <h3>Example 26: Add a New Invoice</h3>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">New Document: Invoice record</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{
+      <h3>Example 26: Add a New Invoice</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">New Document: Invoice record</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{
   "transactionId": "TRX026",
   "type": "invoice",
   "date": "2024-04-10",
@@ -1484,15 +1522,15 @@
   "department": "Sales & Marketing",
   "dueDate": "2024-05-10"
 }</code></pre>
-            </div>
+      </div>
 
-            <h3>Example 27: Add a New Expense</h3>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">New Document: Expense record</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{
+      <h3>Example 27: Add a New Expense</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">New Document: Expense record</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{
   "transactionId": "TRX027",
   "type": "expense",
   "date": "2024-04-12",
@@ -1504,221 +1542,225 @@
   "department": "Administration",
   "approver": "John Smith"
 }</code></pre>
-            </div>
+      </div>
 
-        </section>
+    </section>
 
-        <!-- UPDATE Operations -->
-        <section id="update">
-            <h2>Step 6: Updating Records (UPDATE)</h2>
+    <!-- UPDATE Operations -->
+    <section id="update">
+      <h2>Step 6: Updating Records (UPDATE)</h2>
 
-            <p>You can modify existing records directly in Atlas using the visual editor.</p>
+      <p>You can modify existing records directly in Atlas using the visual editor.</p>
 
-            <div class="step-box">
-                <p><strong>How to update a document:</strong></p>
-                <ol>
-                    <li>Find the document you want to update using filters</li>
-                    <li>Click on the document to expand it</li>
-                    <li>Click the pencil (edit) icon</li>
-                    <li>Modify the fields you want to change</li>
-                    <li>Click "UPDATE"</li>
-                </ol>
-            </div>
+      <div class="step-box">
+        <p><strong>How to update a document:</strong></p>
+        <ol>
+          <li>Find the document you want to update using filters</li>
+          <li>Click on the document to expand it</li>
+          <li>Click the pencil (edit) icon</li>
+          <li>Modify the fields you want to change</li>
+          <li>Click "UPDATE"</li>
+        </ol>
+      </div>
 
-            <h3>Example 28: Mark an Invoice as Paid</h3>
-            <p><strong>Step 1:</strong> Find the invoice using this filter:</p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Filter: Find specific invoice</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{ "transactionId": "TRX004" }</code></pre>
-            </div>
-            <p><strong>Step 2:</strong> Click the document to expand it, then click edit</p>
-            <p><strong>Step 3:</strong> Change the <code>status</code> field from <code>"unpaid"</code> to <code>"paid"</code></p>
-            <p><strong>Step 4:</strong> Add a new field called <code>paymentDate</code> with value <code>"2024-04-15"</code></p>
-            <p><strong>Step 5:</strong> Click UPDATE</p>
+      <h3>Example 28: Mark an Invoice as Paid</h3>
+      <p><strong>Step 1:</strong> Find the invoice using this filter:</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Filter: Find specific invoice</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{ "transactionId": "TRX004" }</code></pre>
+      </div>
+      <p><strong>Step 2:</strong> Click the document to expand it, then click edit</p>
+      <p><strong>Step 3:</strong> Change the <code>status</code> field from <code>"unpaid"</code> to <code>"paid"</code>
+      </p>
+      <p><strong>Step 4:</strong> Add a new field called <code>paymentDate</code> with value <code>"2024-04-15"</code>
+      </p>
+      <p><strong>Step 5:</strong> Click UPDATE</p>
 
-            <h3>Example 29: Approve a Pending Expense</h3>
-            <p><strong>Step 1:</strong> Find the expense:</p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Filter: Find pending expense</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{ "transactionId": "TRX008" }</code></pre>
-            </div>
-            <p><strong>Step 2:</strong> Edit the document</p>
-            <p><strong>Step 3:</strong> Change <code>status</code> from <code>"pending"</code> to <code>"approved"</code></p>
-            <p><strong>Step 4:</strong> Click UPDATE</p>
+      <h3>Example 29: Approve a Pending Expense</h3>
+      <p><strong>Step 1:</strong> Find the expense:</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Filter: Find pending expense</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{ "transactionId": "TRX008" }</code></pre>
+      </div>
+      <p><strong>Step 2:</strong> Edit the document</p>
+      <p><strong>Step 3:</strong> Change <code>status</code> from <code>"pending"</code> to <code>"approved"</code></p>
+      <p><strong>Step 4:</strong> Click UPDATE</p>
 
-            <h3>Example 30: Update Transaction Amount</h3>
-            <p>Sometimes you need to correct an amount after discovering an error.</p>
-            <p><strong>Step 1:</strong> Find the transaction:</p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Filter: Find transaction to correct</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{ "transactionId": "TRX027" }</code></pre>
-            </div>
-            <p><strong>Step 2:</strong> Edit the <code>amount</code> field to the correct value</p>
-            <p><strong>Step 3:</strong> Click UPDATE</p>
+      <h3>Example 30: Update Transaction Amount</h3>
+      <p>Sometimes you need to correct an amount after discovering an error.</p>
+      <p><strong>Step 1:</strong> Find the transaction:</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Filter: Find transaction to correct</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{ "transactionId": "TRX027" }</code></pre>
+      </div>
+      <p><strong>Step 2:</strong> Edit the <code>amount</code> field to the correct value</p>
+      <p><strong>Step 3:</strong> Click UPDATE</p>
 
-        </section>
+    </section>
 
-        <!-- DELETE Operations -->
-        <section id="delete">
-            <h2>Step 7: Deleting Records (DELETE)</h2>
+    <!-- DELETE Operations -->
+    <section id="delete">
+      <h2>Step 7: Deleting Records (DELETE)</h2>
 
-            <p>Sometimes you need to remove incorrect or duplicate records.</p>
+      <p>Sometimes you need to remove incorrect or duplicate records.</p>
 
-            <div class="step-box">
-                <p><strong>How to delete a document:</strong></p>
-                <ol>
-                    <li>Find the document you want to delete using filters</li>
-                    <li>Click on the document to expand it</li>
-                    <li>Click the trash can (delete) icon</li>
-                    <li>Confirm the deletion</li>
-                </ol>
-            </div>
+      <div class="step-box">
+        <p><strong>How to delete a document:</strong></p>
+        <ol>
+          <li>Find the document you want to delete using filters</li>
+          <li>Click on the document to expand it</li>
+          <li>Click the trash can (delete) icon</li>
+          <li>Confirm the deletion</li>
+        </ol>
+      </div>
 
-            <div class="info-box">
-                <strong>⚠️ Warning:</strong>
-                <p>Deletion is permanent! Always make sure you're deleting the correct record. In a real accounting system, you might want to mark records as "inactive" rather than deleting them to maintain an audit trail.</p>
-            </div>
+      <div class="info-box">
+        <strong>⚠️ Warning:</strong>
+        <p>Deletion is permanent! Always make sure you're deleting the correct record. In a real accounting system, you
+          might want to mark records as "inactive" rather than deleting them to maintain an audit trail.</p>
+      </div>
 
-            <h3>Example 31: Delete a Duplicate Transaction</h3>
-            <p><strong>Step 1:</strong> Find the duplicate transaction:</p>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Filter: Find transaction to delete</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>{ "transactionId": "TRX027" }</code></pre>
-            </div>
-            <p><strong>Step 2:</strong> Verify it's the correct record to delete</p>
-            <p><strong>Step 3:</strong> Click the trash icon</p>
-            <p><strong>Step 4:</strong> Confirm deletion</p>
+      <h3>Example 31: Delete a Duplicate Transaction</h3>
+      <p><strong>Step 1:</strong> Find the duplicate transaction:</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Filter: Find transaction to delete</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>{ "transactionId": "TRX027" }</code></pre>
+      </div>
+      <p><strong>Step 2:</strong> Verify it's the correct record to delete</p>
+      <p><strong>Step 3:</strong> Click the trash icon</p>
+      <p><strong>Step 4:</strong> Confirm deletion</p>
 
-        </section>
+    </section>
 
-        <!-- Summary Section -->
-        <section id="summary">
-            <h2>Summary</h2>
+    <!-- Summary Section -->
+    <section id="summary">
+      <h2>Summary</h2>
 
-            <div class="intro-box">
-                <h3>What You've Learned</h3>
-                <p>Congratulations! You now know how to:</p>
-                <ul>
-                    <li>✅ Set up and populate a MongoDB database with accounting data</li>
-                    <li>✅ Find records using simple and complex filters</li>
-                    <li>✅ Use comparison operators ($gt, $lt, $gte, $lte)</li>
-                    <li>✅ Combine conditions with AND and OR logic</li>
-                    <li>✅ Sort and limit results</li>
-                    <li>✅ Perform aggregations to calculate totals, averages, and summaries</li>
-                    <li>✅ Create new records</li>
-                    <li>✅ Update existing records</li>
-                    <li>✅ Delete records safely</li>
-                </ul>
-            </div>
+      <div class="intro-box">
+        <h3>What You've Learned</h3>
+        <p>Congratulations! You now know how to:</p>
+        <ul>
+          <li>✅ Set up and populate a MongoDB database with accounting data</li>
+          <li>✅ Find records using simple and complex filters</li>
+          <li>✅ Use comparison operators ($gt, $lt, $gte, $lte)</li>
+          <li>✅ Combine conditions with AND and OR logic</li>
+          <li>✅ Sort and limit results</li>
+          <li>✅ Perform aggregations to calculate totals, averages, and summaries</li>
+          <li>✅ Create new records</li>
+          <li>✅ Update existing records</li>
+          <li>✅ Delete records safely</li>
+        </ul>
+      </div>
 
-            <div class="info-box">
-                <h3>Key Concepts to Remember</h3>
-                <p><strong>Query Operators:</strong></p>
-                <ul>
-                    <li><code>$gt</code>, <code>$gte</code>, <code>$lt</code>, <code>$lte</code> - Compare numbers and dates</li>
-                    <li><code>$or</code> - Match any condition in a list</li>
-                    <li><code>$in</code> - Check if a field matches any value in a list</li>
-                </ul>
-                <p><strong>Aggregation Operators:</strong></p>
-                <ul>
-                    <li><code>$match</code> - Filter documents</li>
-                    <li><code>$group</code> - Group documents and calculate summaries</li>
-                    <li><code>$sort</code> - Order results</li>
-                    <li><code>$sum</code>, <code>$avg</code>, <code>$min</code>, <code>$max</code> - Calculate values</li>
-                </ul>
-            </div>
+      <div class="info-box">
+        <h3>Key Concepts to Remember</h3>
+        <p><strong>Query Operators:</strong></p>
+        <ul>
+          <li><code>$gt</code>, <code>$gte</code>, <code>$lt</code>, <code>$lte</code> - Compare numbers and dates</li>
+          <li><code>$or</code> - Match any condition in a list</li>
+          <li><code>$in</code> - Check if a field matches any value in a list</li>
+        </ul>
+        <p><strong>Aggregation Operators:</strong></p>
+        <ul>
+          <li><code>$match</code> - Filter documents</li>
+          <li><code>$group</code> - Group documents and calculate summaries</li>
+          <li><code>$sort</code> - Order results</li>
+          <li><code>$sum</code>, <code>$avg</code>, <code>$min</code>, <code>$max</code> - Calculate values</li>
+        </ul>
+      </div>
 
-            <div class="intro-box">
-                <h3>Next Steps</h3>
-                <p>Now that you understand the basics, you can:</p>
-                <ul>
-                    <li>Practice with your own accounting data</li>
-                    <li>Create more complex aggregation pipelines</li>
-                    <li>Explore MongoDB's documentation for advanced features</li>
-                    <li>Learn about indexes to make queries faster</li>
-                    <li>Study data validation to ensure data quality</li>
-                </ul>
-            </div>
-        </section>
+      <div class="intro-box">
+        <h3>Next Steps</h3>
+        <p>Now that you understand the basics, you can:</p>
+        <ul>
+          <li>Practice with your own accounting data</li>
+          <li>Create more complex aggregation pipelines</li>
+          <li>Explore MongoDB's documentation for advanced features</li>
+          <li>Learn about indexes to make queries faster</li>
+          <li>Study data validation to ensure data quality</li>
+        </ul>
+      </div>
+    </section>
 
-        <footer>
-            <p>MongoDB for Accounting Students - Atlas Tutorial</p>
-            <p>Created for educational purposes</p>
-        </footer>
-    </div>
+    <footer>
+      <p>MongoDB for Accounting Students - Atlas Tutorial</p>
+      <p>Created for educational purposes</p>
+    </footer>
+  </div>
 
-    <script>
-        // Copy to clipboard functionality
-        function copyCode(button) {
-            const codeBlock = button.closest('.code-block');
-            const code = codeBlock.querySelector('code').textContent;
-            
-            navigator.clipboard.writeText(code).then(() => {
-                button.textContent = 'Copied!';
-                button.classList.add('copied');
-                codeBlock.classList.add('highlight');
-                
-                setTimeout(() => {
-                    button.textContent = 'Copy';
-                    button.classList.remove('copied');
-                    codeBlock.classList.remove('highlight');
-                }, 2000);
-            }).catch(err => {
-                console.error('Failed to copy:', err);
-                button.textContent = 'Error!';
-                setTimeout(() => {
-                    button.textContent = 'Copy';
-                }, 2000);
-            });
+  <script>
+    // Copy to clipboard functionality
+    function copyCode( button ) {
+      const codeBlock = button.closest( '.code-block' );
+      const code = codeBlock.querySelector( 'code' ).textContent;
+
+      navigator.clipboard.writeText( code ).then( () => {
+        button.textContent = 'Copied!';
+        button.classList.add( 'copied' );
+        codeBlock.classList.add( 'highlight' );
+
+        setTimeout( () => {
+          button.textContent = 'Copy';
+          button.classList.remove( 'copied' );
+          codeBlock.classList.remove( 'highlight' );
+        }, 2000 );
+      } ).catch( err => {
+        console.error( 'Failed to copy:', err );
+        button.textContent = 'Error!';
+        setTimeout( () => {
+          button.textContent = 'Copy';
+        }, 2000 );
+      } );
+    }
+
+    // Smooth scroll for better UX
+    document.querySelectorAll( 'a[href^="#"]' ).forEach( anchor => {
+      anchor.addEventListener( 'click', function ( e ) {
+        e.preventDefault();
+        const target = document.querySelector( this.getAttribute( 'href' ) );
+        if ( target ) {
+          target.scrollIntoView( {
+            behavior: 'smooth',
+            block: 'start'
+          } );
         }
+      } );
+    } );
 
-        // Smooth scroll for better UX
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
+    // Back to Top Button functionality
+    const backToTopButton = document.getElementById( 'backToTop' );
 
-        // Back to Top Button functionality
-        const backToTopButton = document.getElementById('backToTop');
-        
-        // Show/hide button based on scroll position
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 300) {
-                backToTopButton.classList.add('visible');
-            } else {
-                backToTopButton.classList.remove('visible');
-            }
-        });
-        
-        // Smooth scroll to top when clicked
-        backToTopButton.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
+    // Show/hide button based on scroll position
+    window.addEventListener( 'scroll', () => {
+      if ( window.pageYOffset > 300 ) {
+        backToTopButton.classList.add( 'visible' );
+      } else {
+        backToTopButton.classList.remove( 'visible' );
+      }
+    } );
 
-        // Sections are now visible by default via CSS animation
-    </script>
+    // Smooth scroll to top when clicked
+    backToTopButton.addEventListener( 'click', () => {
+      window.scrollTo( {
+        top: 0,
+        behavior: 'smooth'
+      } );
+    } );
+
+    // Sections are now visible by default via CSS animation
+  </script>
 </body>
+
 </html>
